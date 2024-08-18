@@ -42,11 +42,21 @@ export default function RootLayout({
                                 notificationProvider={notificationProvider}
                                 resources={[
                                     {
-                                        name: "fee",
+                                        name: "fees",
                                         list: "/fee",
                                         create: "/fee/create",
                                         edit: "/fee/edit/:id",
                                         show: "/fee/show/:id",
+                                        meta: {
+                                            canDelete: true
+                                        },
+                                    },
+                                    {
+                                        name: "customers",
+                                        list: "/customer",
+                                        create: "/customer/create",
+                                        edit: "/customer/edit/:id",
+                                        show: "/customer/show/:id",
                                         meta: {
                                             canDelete: true
                                         },

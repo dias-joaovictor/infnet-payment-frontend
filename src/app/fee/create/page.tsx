@@ -11,11 +11,7 @@ export default function FeeCreate() {
         refineCore: {formLoading},
         register,
         formState: {errors},
-    } = useForm<IFee>({
-        refineCoreProps: {
-            resource: "fees",
-        },
-    });
+    } = useForm<IFee>();
 
     return (
         <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
@@ -49,6 +45,7 @@ export default function FeeCreate() {
                     type="date"
                     label={"Starting Date"}
                     name="fromDate"
+                    defaultValue={new Date().toISOString().split('T')[0]}
                 />
             </Box>
         </Create>

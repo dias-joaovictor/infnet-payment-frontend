@@ -3,7 +3,7 @@
 import {Box, TextField} from "@mui/material";
 import {Edit} from "@refinedev/mui";
 import {IFee} from "@app/fee/types/IFee";
-import {useParsed, useShow} from "@refinedev/core";
+import {useParsed} from "@refinedev/core";
 import {useForm} from "@refinedev/react-hook-form";
 
 export default function FeeEdit() {
@@ -14,15 +14,7 @@ export default function FeeEdit() {
         refineCore: {formLoading, onFinish},
         register,
         formState: {errors},
-    } = useForm<IFee>({
-        refineCoreProps: {
-            resource: "fees",
-            id,
-            action: "edit"
-        }
-    });
-
-    const {query} = useShow<IFee>({resource: "fees", id});
+    } = useForm<IFee>();
 
     return (
         <Edit saveButtonProps={saveButtonProps} isLoading={formLoading}>

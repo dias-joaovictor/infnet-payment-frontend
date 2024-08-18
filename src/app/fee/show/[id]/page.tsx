@@ -1,14 +1,13 @@
 "use client";
 
 import {Stack, Typography} from "@mui/material";
-import {useParsed, useShow} from "@refinedev/core";
+import {useShow} from "@refinedev/core";
 import {Show, TextFieldComponent as TextField} from "@refinedev/mui";
 import {IFee} from "@app/fee/types/IFee";
 
 
 export default function FeeShow() {
-    const {id} = useParsed();
-    const {query} = useShow<IFee>({resource: "fees", id});
+    const {query} = useShow<IFee>();
     const {data, isLoading} = query;
     const record = data?.data;
 

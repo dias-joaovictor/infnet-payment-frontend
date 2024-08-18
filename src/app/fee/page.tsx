@@ -7,7 +7,7 @@ import {IFee} from "@app/fee/types/IFee";
 
 
 export default function FeeList() {
-    const {dataGridProps} = useDataGrid<IFee>({resource: 'fees'});
+    const {dataGridProps} = useDataGrid<IFee>();
 
     const columns = React.useMemo<GridColDef[]>(
         () => [
@@ -54,7 +54,7 @@ export default function FeeList() {
     );
 
     return (
-        <List resource={'fee'} canCreate={true}>
+        <List canCreate={true}>
             <DataGrid {...dataGridProps} columns={columns} autoHeight/>
         </List>
     );
