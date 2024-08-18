@@ -40,7 +40,7 @@ export default function FeeList() {
                         <>
                             <EditButton hideText recordItemId={row.id}/>
                             <ShowButton hideText recordItemId={row.id}/>
-                            <DeleteButton hideText recordItemId={row.id} resource={"fees"}/>
+                            <DeleteButton hideText recordItemId={row.id}/>
                         </>
                     );
                 },
