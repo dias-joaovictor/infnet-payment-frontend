@@ -6,7 +6,7 @@ import {useForm} from "@refinedev/react-hook-form";
 import {ICustomer} from "@app/customer/types/ICustomer";
 import {useEffect, useState} from "react";
 
-export default function FeeEdit() {
+export default function OrderEdit() {
     const {
         saveButtonProps,
         refineCore: {formLoading, query},

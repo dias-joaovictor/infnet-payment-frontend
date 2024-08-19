@@ -5,7 +5,7 @@ import {Create} from "@refinedev/mui";
 import {useForm} from "@refinedev/react-hook-form";
 import {ICustomer} from "@app/customer/types/ICustomer";
 
-export default function FeeCreate() {
+export default function OrderCreate() {
     const {
         saveButtonProps,
         refineCore: {formLoading},

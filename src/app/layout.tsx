@@ -72,6 +72,16 @@ export default function RootLayout({
                                         },
                                     },
                                     {
+                                        name: "payments",
+                                        list: "/payment",
+                                        create: "/payment/create",
+                                        edit: "/payment/edit/:id",
+                                        show: "/payment/show/:id",
+                                        meta: {
+                                            canDelete: true
+                                        },
+                                    },
+                                    {
                                         name: "blog_posts",
                                         list: "/blog-posts",
                                         create: "/blog-posts/create",
