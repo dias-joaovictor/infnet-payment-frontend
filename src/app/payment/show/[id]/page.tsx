@@ -3,11 +3,11 @@
 import {Stack, Typography} from "@mui/material";
 import {useShow} from "@refinedev/core";
 import {Show, TextFieldComponent as TextField} from "@refinedev/mui";
-import {IFee} from "@app/fee/types/IFee";
+import {ICardPayment, IPayment, IPixPayment} from "@app/payment/types/IPayment";
 
 
 export default function FeeShow() {
-    const {query} = useShow<IFee>();
+    const {query} = useShow<IPayment>();
     const {data, isLoading} = query;
     const record = data?.data;
 
@@ -16,16 +16,41 @@ export default function FeeShow() {
             <Stack gap={1}>
                 <Typography variant="body1" fontWeight="bold">
                     {"ID"}
+                    <TextField value={record?.id}/>
                 </Typography>
-                <TextField value={record?.id}/>
+
                 <Typography variant="body1" fontWeight="bold">
                     {"Amount"}
+                    <TextField value={record?.amount}/>
                 </Typography>
-                <TextField value={record?.feeAmount}/>
+
                 <Typography variant="body1" fontWeight="bold">
-                    {"Starting Date"}
+                    {"Type"}
+                    <TextField value={record?.type}/>
                 </Typography>
-                <TextField value={record?.fromDate}/>
+
+                {record?.type === 'PIX' ? (
+                    <Typography variant="body1" fontWeight="bold">
+                        {"Pix Key"}
+                        <TextField value={(record as IPixPayment)?.pixKey}/>
+                    </Typography>
+                ) : (
+                    <>
+                        <Typography variant="body1" fontWeight="bold">
+                            {"Card Hash"}
+                            <TextField value={(record as ICardPayment)?.cardHash}/>
+                        </Typography>
+                        <Typography variant="body1" fontWeight="bold">
+                            {"Card Holder Name"}
+                            <TextField value={(record as ICardPayment)?.cardholderName}/>
+                        </Typography>
+                        <Typography variant="body1" fontWeight="bold">
+                            {"Expiration Date"}
+                            <TextField value={(record as ICardPayment)?.expiryDate}/>
+                        </Typography>
+                    </>
+                )}
+
             </Stack>
         </Show>
     );

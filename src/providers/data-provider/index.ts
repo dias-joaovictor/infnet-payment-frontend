@@ -72,7 +72,7 @@ export const dataProvider: DataProvider = ({
     },
 
     getList: async ({resource, pagination, sorters, filters, meta}) => {
-        const url = `${API_URL}/${resource}`;
+        let url = `${API_URL}/${resource}`;
 
         const {headers: headersFromMeta, method} = meta ?? {};
         const requestMethod = (method as MethodTypes) ?? "get";

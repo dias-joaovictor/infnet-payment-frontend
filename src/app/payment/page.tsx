@@ -1,14 +1,34 @@
 "use client";
 
-import {DataGrid, type GridColDef} from "@mui/x-data-grid";
-import {DeleteButton, EditButton, List, ShowButton, useDataGrid,} from "@refinedev/mui";
-import React from "react";
+import {DeleteButton, EditButton, List, ShowButton, useDataGrid} from "@refinedev/mui";
 import {IPayment} from "@app/payment/types/IPayment";
+import {DataGrid, GridColDef} from "@mui/x-data-grid";
+import React from "react";
 import {CurrencyFormatter} from "@components/currency-formatter/CurrencyFormatter";
 
+interface PaymentListProps {
+    orderId: string;
+    parentLoading: boolean;
+}
 
-export default function PaymentList() {
-    const {dataGridProps} = useDataGrid<IPayment>();
+const PaymentList: React.FC<PaymentListProps> = ({orderId, parentLoading}) => {
+
+    const {dataGridProps} = useDataGrid<IPayment>({
+        resource: "payments",
+        filters: {
+            permanent: [
+                {
+                    field: "orderId",
+                    operator: "eq",
+                    value: orderId,
+                },
+            ],
+        },
+        queryOptions: {
+            enabled: !parentLoading,
+        },
+    });
+
 
     const columns = React.useMemo<GridColDef[]>(
         () => [
@@ -16,6 +36,8 @@ export default function PaymentList() {
                 field: "type",
                 headerName: "Type",
                 type: "string",
+                width: 100,
+                // valueGetter: ({row}) => JSON.stringify(row),
             },
             {
                 field: "id",
@@ -37,9 +59,9 @@ export default function PaymentList() {
                 renderCell: function render({row}) {
                     return (
                         <>
-                            <EditButton hideText recordItemId={row.id}/>
-                            <ShowButton hideText recordItemId={row.id}/>
-                            <DeleteButton hideText recordItemId={row.id}/>
+                            <EditButton hideText recordItemId={row.id} resource={"payments"}/>
+                            <ShowButton hideText recordItemId={row.id} resource={"payments"}/>
+                            <DeleteButton hideText recordItemId={row.id} resource={"payments"}/>
                         </>
                     );
                 },
@@ -53,8 +75,19 @@ export default function PaymentList() {
     );
 
     return (
-        <List canCreate={true}>
-            <DataGrid {...dataGridProps} columns={columns} autoHeight/>
-        </List>
+        <>
+            {orderId ? (
+                <List canCreate={true} breadcrumb={false} title="">
+                    <DataGrid {...dataGridProps} columns={columns} autoHeight/>
+                </List>
+            ) : (
+                <List canCreate={true}>
+                    <DataGrid {...dataGridProps} columns={columns} autoHeight/>
+                </List>
+            )}
+        </>
     );
 }
+
+
+export default PaymentList;

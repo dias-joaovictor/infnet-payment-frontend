@@ -2,62 +2,16 @@
 
 import {Box, Grid, Stack, Typography} from "@mui/material";
 import {useShow} from "@refinedev/core";
-import {DeleteButton, EditButton, Show, ShowButton, TextFieldComponent as TextField} from "@refinedev/mui";
+import {Show, TextFieldComponent as TextField} from "@refinedev/mui";
 import {IOrder} from "@app/order/types/IOrder";
 import React from "react";
-import {DataGrid, type GridColDef} from "@mui/x-data-grid";
-import {CurrencyFormatter} from "@components/currency-formatter/CurrencyFormatter";
+import PaymentList from "@app/payment/page";
 
 
 export default function OrderShow() {
     const {query} = useShow<IOrder>();
     const {data, isLoading} = query;
     const record = data?.data;
-
-    const paymentRows = record?.payments || []
-
-    const columns = React.useMemo<GridColDef[]>(
-        () => [
-            {
-                field: "type",
-                headerName: "Type",
-                type: "string",
-                width: 100
-            },
-            {
-                field: "id",
-                headerName: "ID",
-                type: "string",
-                width: 300
-            },
-            {
-                field: "amount",
-                headerName: "Payment Amount",
-                type: "number",
-                minWidth: 50,
-                valueFormatter: CurrencyFormatter({currency: "USD", locale: "en-US"}),
-            },
-            {
-                field: "actions",
-                headerName: "Actions",
-                sortable: false,
-                renderCell: function render({row}) {
-                    return (
-                        <>
-                            <EditButton hideText recordItemId={row.id}/>
-                            <ShowButton hideText recordItemId={row.id}/>
-                            <DeleteButton hideText recordItemId={row.id}/>
-                        </>
-                    );
-                },
-                align: "right", // Aligns the content to the right
-                headerAlign: "right", // Aligns the header to the right
-                flex: 1,
-                minWidth: 80,
-            },
-        ],
-        []
-    );
 
     return (
         <Show isLoading={isLoading}>
@@ -118,17 +72,7 @@ export default function OrderShow() {
                         <Typography variant="h5" fontWeight="bold">
                             {"Payment Data"}
                         </Typography>
-                        <DataGrid
-                            rows={paymentRows}
-                            columns={columns}
-                            initialState={{
-                                pagination: {
-                                    paginationModel: {page: 0, pageSize: 5},
-                                },
-                            }}
-                            pageSizeOptions={[5, 10]}
-                            checkboxSelection
-                        />
+                        <PaymentList orderId={record?.id!} parentLoading={isLoading}/>
                     </Grid>
                 </Grid>
             </Box>
