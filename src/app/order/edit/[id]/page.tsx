@@ -1,10 +1,15 @@
 "use client";
 
-import {Box, Checkbox, FormControl, FormControlLabel, TextField} from "@mui/material";
+import {Box, TextField} from "@mui/material";
 import {Edit} from "@refinedev/mui";
 import {useForm} from "@refinedev/react-hook-form";
+import {IOrder} from "@app/order/types/IOrder";
 import {ICustomer} from "@app/customer/types/ICustomer";
-import {useEffect, useState} from "react";
+import CustomerSearch from "@components/customer-search/page";
+import axios from "axios";
+import {useEffect} from "react";
+
+const FEE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/fees`;
 
 export default function OrderEdit() {
     const {
@@ -12,33 +17,56 @@ export default function OrderEdit() {
         refineCore: {formLoading, query},
         register,
         formState: {errors},
-        setValue
-    } = useForm<ICustomer>();
+        setValue,
+        getValues,
+        watch
+    } = useForm<IOrder>();
 
-    const customer = query?.data?.data;
+    const order = query?.data?.data;
 
-    // State to control the checkbox
-    const [checked, setChecked] = useState(false);
-
-    // Set the initial value of the checkbox once the data is loaded
-    useEffect(() => {
-        if (customer) {
-            setChecked(customer.enabled);
-            setValue("enabled", customer.enabled); // Update the form state with the fetched value
-        }
-    }, [customer, setValue]);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
-        setValue("enabled", event.target.checked); // Update the form state when the checkbox is toggled
+    const handleCustomerSelected = (customer: ICustomer) => {
+        setValue("customer.id", customer.id);
+        setValue("customer.fullname", customer.fullName); // Assuming there's a field for customer full name
     };
 
+    const orderDate = watch("orderDate");
+    const amount = watch("amount");
+
+    useEffect(() => {
+        if (orderDate) {
+            fetchFee(orderDate);
+        }
+        calculateTotalAmount();
+    }, [orderDate, amount]);
+
+    const calculateTotalAmount = async () => {
+        const fee = getValues("fee");
+        const amount = getValues("amount");
+
+        // Update the totalAmount field
+        const totalAmount = parseFloat(fee) + parseFloat(amount || 0);
+        setValue("totalAmount", totalAmount);
+    }
+
+    const fetchFee = async (date: string) => {
+        try {
+            const response = await axios.get(`${FEE_URL}/byDate/${date}`, {});
+
+            if (response.data) {
+                const fee = response.data;
+                setValue("fee", fee);
+            }
+        } catch (error) {
+            console.error("Error fetching fee and total amount:", error);
+        }
+    };
 
     return (
         <Edit saveButtonProps={saveButtonProps} isLoading={formLoading}>
             <Box
                 component="form"
                 sx={{display: "flex", flexDirection: "column"}}
+                gap={2}
                 autoComplete="off"
             >
                 <TextField
@@ -52,46 +80,103 @@ export default function OrderEdit() {
                     disabled={true}
                 />
                 <TextField
-                    id={"fullName"}
-                    {...register("fullName", {
+                    id={"orderDate"}
+                    {...register("orderDate", {
                         required: "This field is required",
                     })}
-                    error={!!(errors as any)?.fullName}
-                    helperText={(errors as any)?.fullName?.message}
-                    margin="normal"
-                    fullWidth
-                    InputLabelProps={{shrink: true}}
-                    type="text"
-                    label={"fullName"}
-                    name="fullName"
-                />
-                <TextField
-                    id={"dateOfBirth"}
-                    {...register("dateOfBirth", {
-                        required: "This field is required",
-                    })}
-                    error={!!(errors as any)?.dateOfBirth}
-                    helperText={(errors as any)?.dateOfBirth?.message}
+                    error={!!(errors as any)?.orderDate}
+                    helperText={(errors as any)?.orderDate?.message}
                     margin="normal"
                     fullWidth
                     InputLabelProps={{shrink: true}}
                     type="date"
-                    label={"Date of Birth"}
-                    name="dateOfBirth"
+                    label={"Order Date"}
+                    name="orderDate"
                 />
-                <FormControl margin="normal" fullWidth error={!!errors.enabled}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                id="enabled"
-                                {...register("enabled")}
-                                checked={checked} // Controlled component
-                                onChange={handleChange} // Handle change manually
-                            />
-                        }
-                        label="Is Customer Enabled" // Label text that appears next to the checkbox
-                    />
-                </FormControl>
+
+                <TextField
+                    id={"amount"}
+                    {...register("amount", {
+                        required: "This field is required",
+                    })}
+                    error={!!(errors as any)?.amount}
+                    helperText={(errors as any)?.amount?.message}
+                    margin="normal"
+                    fullWidth
+                    InputLabelProps={{shrink: true}}
+                    type="number"
+                    label={"Amount"}
+                    name="amount"
+                />
+
+                <TextField
+                    id={"fee"}
+                    {...register("fee", {
+                        required: "This field is required",
+                    })}
+                    error={!!(errors as any)?.fee}
+                    helperText={(errors as any)?.fee?.message}
+                    margin="normal"
+                    fullWidth
+                    InputLabelProps={{shrink: true}}
+                    type="number"
+                    label={"Fee"}
+                    name="fee"
+                    disabled={true}
+                />
+
+                <TextField
+                    id={"totalAmount"}
+                    {...register("totalAmount", {
+                        required: "This field is required",
+                    })}
+                    error={!!(errors as any)?.totalAmount}
+                    helperText={(errors as any)?.totalAmount?.message}
+                    margin="normal"
+                    fullWidth
+                    InputLabelProps={{shrink: true}}
+                    type="number"
+                    label={"Total Amount"}
+                    name="totalAmount"
+                    disabled={true}
+                />
+
+                <TextField
+                    id={"totalPaid"}
+                    {...register("totalPaid", {
+                        required: "This field is required",
+                    })}
+                    error={!!(errors as any)?.totalPaid}
+                    helperText={(errors as any)?.totalPaid?.message}
+                    margin="normal"
+                    fullWidth
+                    InputLabelProps={{shrink: true}}
+                    type="number"
+                    label={"Total Paid"}
+                    name="totalPaid"
+                    disabled={true}
+                />
+
+                <TextField
+                    id={"remainingAmount"}
+                    {...register("remainingAmount", {
+                        required: "This field is required",
+                    })}
+                    error={!!(errors as any)?.totalPaid}
+                    helperText={(errors as any)?.totalPaid?.message}
+                    margin="normal"
+                    fullWidth
+                    InputLabelProps={{shrink: true}}
+                    type="number"
+                    label={"Remaining Amount"}
+                    name="remainingAmount"
+                    disabled={true}
+                />
+
+                <CustomerSearch
+                    initialCustomerId={order?.customer?.id}
+                    onCustomerSelected={handleCustomerSelected}
+                />
 
             </Box>
         </Edit>

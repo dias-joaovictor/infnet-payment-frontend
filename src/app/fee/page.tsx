@@ -4,6 +4,7 @@ import {DataGrid, type GridColDef} from "@mui/x-data-grid";
 import {DeleteButton, EditButton, List, ShowButton, useDataGrid,} from "@refinedev/mui";
 import React from "react";
 import {IFee} from "@app/fee/types/IFee";
+import {CurrencyFormatter} from "@components/currency-formatter/CurrencyFormatter";
 
 
 export default function FeeList() {
@@ -22,7 +23,8 @@ export default function FeeList() {
                 headerName: "Amount",
                 type: "number",
                 minWidth: 50,
-                width: 300
+                width: 300,
+                valueGetter: CurrencyFormatter({})
             },
             {
                 field: "fromDate",

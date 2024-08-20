@@ -4,6 +4,7 @@ import {DataGrid, type GridColDef} from "@mui/x-data-grid";
 import {DeleteButton, EditButton, List, ShowButton, useDataGrid,} from "@refinedev/mui";
 import React from "react";
 import {IOrder} from "@app/order/types/IOrder";
+import {CurrencyFormatter} from "@components/currency-formatter/CurrencyFormatter";
 
 
 export default function OrderList() {
@@ -28,18 +29,21 @@ export default function OrderList() {
                 headerName: "Order Amount",
                 type: "number",
                 minWidth: 50,
+                valueGetter: CurrencyFormatter({})
             },
             {
                 field: "fee",
                 headerName: "Order Fee",
                 type: "number",
                 minWidth: 50,
+                valueGetter: CurrencyFormatter({})
             },
             {
                 field: "totalAmount",
                 headerName: "Total Amount",
                 type: "number",
                 minWidth: 50,
+                valueGetter: CurrencyFormatter({})
             },
             {
                 field: "customer",
