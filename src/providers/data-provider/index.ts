@@ -9,7 +9,8 @@ type MethodTypes = "get" | "delete" | "head" | "options";
 type MethodTypesWithBody = "post" | "put" | "patch";
 
 const HTTP_CLIENT = axios.create();
-const API_URL = "http://localhost:8080";
+
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}`;
 
 export const dataProvider: DataProvider = ({
     getOne: async ({resource, id, meta}) => {
