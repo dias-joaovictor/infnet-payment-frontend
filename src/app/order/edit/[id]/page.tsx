@@ -177,7 +177,6 @@ export default function OrderEdit() {
                     initialCustomerId={order?.customer?.id}
                     onCustomerSelected={handleCustomerSelected}
                 />
-
             </Box>
         </Edit>
     );

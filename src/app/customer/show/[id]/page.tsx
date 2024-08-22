@@ -6,7 +6,7 @@ import {Show, TextFieldComponent as TextField} from "@refinedev/mui";
 import {ICustomer} from "@app/customer/types/ICustomer";
 
 
-export default function FeeShow() {
+export default function CustomerShow() {
     const {query} = useShow<ICustomer>();
     const {data, isLoading} = query;
     const record = data?.data;

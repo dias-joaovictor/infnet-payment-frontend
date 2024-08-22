@@ -5,7 +5,7 @@ import {Create} from "@refinedev/mui";
 import {useForm} from "@refinedev/react-hook-form";
 import {ICustomer} from "@app/customer/types/ICustomer";
 
-export default function FeeCreate() {
+export default function CustomerCreate() {
     const {
         saveButtonProps,
         refineCore: {formLoading},
@@ -31,7 +31,7 @@ export default function FeeCreate() {
                     fullWidth
                     InputLabelProps={{shrink: true}}
                     type="text"
-                    label={"fullName"}
+                    label={"Full Name"}
                     name="fullName"
                 />
                 <TextField

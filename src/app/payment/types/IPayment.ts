@@ -1,7 +1,8 @@
 export interface IPayment {
     id: string;
     amount: number;
-    type: string
+    type: string;
+    orderId: string;
 }
 
 export interface ICardPayment extends IPayment {

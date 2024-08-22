@@ -52,6 +52,15 @@ export default function OrderShow() {
                                     <TextField value={'$' + record?.totalAmount}/>
                                 </Typography>
 
+                                <Typography variant="body1" fontWeight="bold">
+                                    {"Total Paid"}
+                                    <TextField value={'$' + record?.totalPaid}/>
+                                </Typography>
+
+                                <Typography variant="body1" fontWeight="bold">
+                                    {"Remaining Amount"}
+                                    <TextField value={'$' + record?.remainingAmount}/>
+                                </Typography>
                             </Stack>
                             <Stack gap={4}>
                                 <Typography variant="h5" fontWeight="bold">

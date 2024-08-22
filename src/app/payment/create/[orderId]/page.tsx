@@ -1,98 +1,49 @@
 "use client";
 
 import {Box, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField} from "@mui/material";
-import {Edit} from "@refinedev/mui";
+import {Create} from "@refinedev/mui";
 import {useForm} from "@refinedev/react-hook-form";
-import {ICardPayment, IPayment, IPixPayment} from "@app/payment/types/IPayment";
+import {IPayment} from "@app/payment/types/IPayment";
+import {useParams} from "next/navigation";
 import {useEffect} from "react";
 import {useGo} from "@refinedev/core";
-import {Controller} from "react-hook-form";
 
-export default function PaymentEdit() {
+export default function PaymentCreate() {
+
+    const {orderId} = useParams();
     const go = useGo();
 
     const {
         saveButtonProps,
-        refineCore: {formLoading, queryResult},
+        refineCore: {formLoading},
         register,
-        control,
-        watch,
         setValue,
+        watch,
         formState: {errors},
     } = useForm<IPayment>({
-            refineCoreProps: {
-                redirect: false,
-                onMutationSuccess: (data) => {
-                    if (data?.data) {
-                        const orderId = data.data.orderId;
-                        go({to: `/order/show/${orderId}`});
-                    }
-                }
+        refineCoreProps: {
+            redirect: false,
+            onMutationSuccess: () => {
+                go({to: `/order/show/${orderId}`});
             }
         }
-    );
+    });
 
-    // const type = watch("type");
 
-    // Effect to set the initial value of the select input when the data is loaded
-    // useEffect(() => {
-    //     if (queryResult?.data?.data) {
-    //         const paymentData = queryResult.data.data as IPayment;
-    //         setValue("type", paymentData.type);
-    //         if (paymentData.type === 'CARD') {
-    //             const cardPayment = queryResult.data.data as ICardPayment;
-    //             setValue("cardHash", cardPayment.cardHash);
-    //             setValue("cardholderName", cardPayment.cardholderName);
-    //             setValue("expiryDate", cardPayment.expiryDate);
-    //         } else {
-    //             const pixPayment = queryResult.data.data as IPixPayment;
-    //             setValue("pixKey", pixPayment.pixKey);
-    //         }
-    //     }
-    // }, [queryResult]);
-
-    const type = watch("type");  // Get the current type value
-
-    // Effect to set the initial value of the select input when the data is loaded
     useEffect(() => {
-        if (!type && queryResult?.data?.data) {  // Check if type is not set
-            const paymentData = queryResult.data.data as IPayment;
+        setValue("orderId", orderId);
+    }, [orderId, setValue]);
 
-            setValue("type", paymentData.type);
-
-            if (paymentData.type === 'CARD') {
-                const cardPayment = paymentData as ICardPayment;
-                setValue("cardHash", cardPayment.cardHash);
-                setValue("cardholderName", cardPayment.cardholderName);
-                setValue("expiryDate", cardPayment.expiryDate);
-            } else if (paymentData.type === 'PIX') {
-                const pixPayment = paymentData as IPixPayment;
-                setValue("pixKey", pixPayment.pixKey);
-            }
-        }
-    }, [queryResult, setValue, type]);
+    // Watch the payment type to render conditional fields
+    const type = watch("type");
 
     return (
-        <Edit saveButtonProps={saveButtonProps} isLoading={formLoading}>
+        <Create isLoading={formLoading} goBack {...saveButtonProps}>
             <Box
                 component="form"
                 sx={{display: "flex", flexDirection: "column"}}
                 autoComplete="off"
             >
-                <TextField
-                    {...register("id", {
-                        required: "This field is required",
-                    })}
-                    error={!!(errors as any)?.id}
-                    helperText={(errors as any)?.id?.message}
-                    margin="normal"
-                    fullWidth
-                    InputLabelProps={{shrink: true}}
-                    type="text"
-                    label={"Id"}
-                    name="id"
-                    disabled
-                />
                 <TextField
                     {...register("orderId", {
                         required: "This field is required",
@@ -124,24 +75,21 @@ export default function PaymentEdit() {
                 <FormControl
                     fullWidth
                     margin="normal"
-                    error={!!errors.type}
+                    error={!!(errors as any)?.type}
                 >
                     <InputLabel id="type-label">Type</InputLabel>
-                    <Controller
-                        name="type"
-                        control={control}
+                    <Select
+                        labelId="type-label"
+                        id="type"
+                        label="Type"
                         defaultValue=""
-                        render={({field}) => (
-                            <Select
-                                {...field}
-                                labelId="type-label"
-                                label="Type"
-                            >
-                                <MenuItem value="CARD">CARD</MenuItem>
-                                <MenuItem value="PIX">PIX</MenuItem>
-                            </Select>
-                        )}
-                    />
+                        {...register("type", {
+                            required: "This field is required",
+                        })}
+                    >
+                        <MenuItem value="CARD">CARD</MenuItem>
+                        <MenuItem value="PIX">PIX</MenuItem>
+                    </Select>
                     {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
                 </FormControl>
 
@@ -205,6 +153,6 @@ export default function PaymentEdit() {
                     />
                 )}
             </Box>
-        </Edit>
+        </Create>
     );
 }

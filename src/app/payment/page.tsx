@@ -1,6 +1,6 @@
 "use client";
 
-import {DeleteButton, EditButton, List, ShowButton, useDataGrid} from "@refinedev/mui";
+import {CreateButton, DeleteButton, EditButton, List, ShowButton, useDataGrid} from "@refinedev/mui";
 import {IPayment} from "@app/payment/types/IPayment";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import React from "react";
@@ -12,6 +12,7 @@ interface PaymentListProps {
 }
 
 const PaymentList: React.FC<PaymentListProps> = ({orderId, parentLoading}) => {
+
 
     const {dataGridProps} = useDataGrid<IPayment>({
         resource: "payments",
@@ -59,7 +60,7 @@ const PaymentList: React.FC<PaymentListProps> = ({orderId, parentLoading}) => {
                 renderCell: function render({row}) {
                     return (
                         <>
-                            <EditButton hideText recordItemId={row.id} resource={"payments"}/>
+                            <EditButton hideText recordItemId={row.id} resource={"payments"} meta={{orderId: orderId}}/>
                             <ShowButton hideText recordItemId={row.id} resource={"payments"}/>
                             <DeleteButton hideText recordItemId={row.id} resource={"payments"}/>
                         </>
@@ -77,11 +78,21 @@ const PaymentList: React.FC<PaymentListProps> = ({orderId, parentLoading}) => {
     return (
         <>
             {orderId ? (
-                <List canCreate={true} breadcrumb={false} title="">
+                <List canCreate={true} breadcrumb={false} title="" resource={"payment"}
+                      headerButtons={
+                          ({createButtonProps}) => (
+                              <>
+                                  {createButtonProps && (
+                                      <CreateButton {...createButtonProps} meta={{orderId: `${orderId}`}}
+                                                    resource={"payments"}/>
+                                  )}
+                              </>
+                          )
+                      }>
                     <DataGrid {...dataGridProps} columns={columns} autoHeight/>
                 </List>
             ) : (
-                <List canCreate={true}>
+                <List canCreate={true} resource={"payments"}>
                     <DataGrid {...dataGridProps} columns={columns} autoHeight/>
                 </List>
             )}
