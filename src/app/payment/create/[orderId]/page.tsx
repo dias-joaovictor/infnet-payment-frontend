@@ -23,22 +23,26 @@ export default function PaymentCreate() {
     } = useForm<IPayment>({
         refineCoreProps: {
             redirect: false,
-            onMutationSuccess: () => {
-                go({to: `/order/show/${orderId}`});
+            onMutationSuccess: ({data}) => {
+                if (data?.orderId) {
+                    go({to: `/order/show/${data.orderId}`});
+                }
             }
         }
     });
 
 
     useEffect(() => {
-        setValue("orderId", orderId);
+        if (orderId) {
+            setValue("orderId", orderId);
+        }
     }, [orderId, setValue]);
 
     // Watch the payment type to render conditional fields
     const type = watch("type");
 
     return (
-        <Create isLoading={formLoading} goBack {...saveButtonProps}>
+        <Create isLoading={formLoading} goBack saveButtonProps={saveButtonProps}>
             <Box
                 component="form"
                 sx={{display: "flex", flexDirection: "column"}}
